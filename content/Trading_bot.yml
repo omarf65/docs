@@ -1,0 +1,31 @@
+name: Run Trading Bot
+on:
+  schedule:
+    - cron: '0 * * * *'  # هر ۱ ساعت اجرا شود
+  push:
+    branches: [ main ]   # با هر تغییر در کد هم اجرا شود
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install pandas numpy ta xgboost yfinance
+      
+      - name: Run Python Script
+        run: |
+          python trading_bot.py
+      
+      - name: Upload Signals to CSV
+        uses: actions/upload-artifact@v3
+        with:
+          name: signals.csv
+          path: signals.csv
